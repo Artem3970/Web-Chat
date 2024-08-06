@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ chat_room.name }}</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f0f2f5;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+      }
+      .container {
+        display: flex;
+        flex: 1;
+        margin: 20px;
+      }
+      .chat-room {
+        flex: 1;
+        max-width: 70%;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .message-list {
+        flex: 1;
+        overflow-y: auto;
+        padding-right: 10px;
+        margin-bottom: 10px;
+      }
+      .message {
+        margin-bottom: 10px;
+      }
+      .message p {
+        margin: 0;
+      }
+      .message span {
+        font-size: 0.8em;
+        color: #888;
+      }
+      .message-form {
+        display: flex;
+        margin-top: 10px;
+      }
+      .message-form input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      .message-form button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-left: 10px;
+        transition: background-color 0.3s;
+      }
+      .message-form button:hover {
+        background-color: #0056b3;
+      }
+      .sidebar {
+        max-width: 30%;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-left: 20px;
+        overflow-y: auto;
+        height: 100%;
+      }
+      .user-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .user-list li {
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+      }
+      .user-list .user-color {
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 8px;
+      }
+      .user-list .username {
+        font-weight: bold;
+      }
+      .form-footer {
+        text-align: center;
+        margin-top: 20px;
+      }
+      .form-footer a {
+        color: #007bff;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+      .form-footer a:hover {
+        color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="chat-room">
+        <h2>Chat Room: {{ chat_room.name }}</h2>
+        <div class="message-list">
+          {% for message in messages %}
+          <div class="message">
+            <p>
+              <strong>{{ message.user.username }}:</strong> {{ message.content
+              }}
+            </p>
+            <span>{{ message.timestamp|date:"H:i" }}</span>
+          </div>
+          {% empty %}
+          <div class="message">No messages yet.</div>
+          {% endfor %}
+        </div>
+        <form method="post" class="message-form">
+          {% csrf_token %}
+          <input type="text" name="message" placeholder="Type a message..." />
+          <button type="submit">Send</button>
+        </form>
+      </div>
+      <div class="sidebar">
+        <h3>Participants</h3>
+        <ul class="user-list">
+          {% for user in users_in_room %}
+          <li>
+            <span
+              class="user-color"
+              style="background-color: {{ user.color }};"
+            ></span>
+            <span class="username">{{ user.user.username }}</span>
+          </li>
+          {% empty %}
+          <li>No participants yet.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>
